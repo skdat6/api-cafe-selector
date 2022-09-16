@@ -54,20 +54,44 @@ def all_cafes():
     cafes = db.session.query(Cafe).all()
     for cafe in cafes:
         cafe_item = {
-        "id": cafe_item.id,
-        "name": cafe_item.name,
-        "map_url": cafe_item.map_url,
-        "img_url": cafe_item.img_url,
-        "location": cafe_item.location,
-        "seats": cafe_item.seats,
-        "has_toilet": cafe_item.has_toilet,
-        "has_wifi": cafe_item.has_wifi,
-        "has_sockets": cafe_item.has_sockets,
-        "can_take_calls": cafe_item.can_take_calls,
-        "coffee_price": cafe_item.coffee_price,
+        "id": cafe.id,
+        "name": cafe.name,
+        "map_url": cafe.map_url,
+        "img_url": cafe.img_url,
+        "location": cafe.location,
+        "seats": cafe.seats,
+        "has_toilet": cafe.has_toilet,
+        "has_wifi": cafe.has_wifi,
+        "has_sockets": cafe.has_sockets,
+        "can_take_calls": cafe.can_take_calls,
+        "coffee_price": cafe.coffee_price,
      }
         cafe_list.append(cafe_item)
     return jsonify(cafes=cafe_list)
+
+
+@app.route("/search")
+def get_cafe_at_location():
+    query_location = request.args.get("loc")
+    cafe = db.session.query(Cafe).filter_by(location=query_location).first()
+    if cafe:
+        cafe_item = {
+            "id": cafe.id,
+            "name": cafe.name,
+            "map_url": cafe.map_url,
+            "img_url": cafe.img_url,
+            "location": cafe.location,
+            "seats": cafe.seats,
+            "has_toilet": cafe.has_toilet,
+            "has_wifi": cafe.has_wifi,
+            "has_sockets": cafe.has_sockets,
+            "can_take_calls": cafe.can_take_calls,
+            "coffee_price": cafe.coffee_price,
+        }
+
+        return jsonify(cafe=cafe_item)
+    else:
+        return jsonify(error={"Not Found": "Sorry, we don't have a cafe at that location."})
 
 
 #TODO HTTP POST - Create
